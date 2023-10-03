@@ -62,7 +62,7 @@ REPOSITORY: Optional[
 ] = "https://github.com/thepbordin/Obstacle-Detection-for-Blind-people"
 
 CITATION_URL: Optional[str] = None
-AUTHORS: Optional[List[str]] = None
+AUTHORS: Optional[List[str]] = ["Thepbordin"]
 
 ORGANIZATION_NAME: Optional[Union[str, List[str]]] = None
 ORGANIZATION_URL: Optional[Union[str, List[str]]] = None

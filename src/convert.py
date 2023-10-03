@@ -75,24 +75,26 @@ def count_files(path, extension):
 def create_ann(image_path):
     labels = []
     ann_path = os.path.join(
-        os.path.dirname(image_path), (sly.fs.get_file_name(image_path) + ".txt")
+        os.path.dirname(os.path.dirname(image_path)),
+        "labels",
+        (sly.fs.get_file_name(image_path) + ".txt"),
     )
-    with open("readme.txt") as f:
+    img_width, img_height = imagesize.get(image_path)
+    with open(ann_path) as f:
         lines = f.readlines()
     for line in lines:
-        line_parts = line.split()
-        obj_class_idx = line_parts[0]
-        x, y, w, h = line_parts[1:4]
-        top, left = x - w / 2, y - h / 2
-        bottom, right = x + w / 2, y + h / 2
-        rectangle = sly.Rectangle(
-            top=int(top), left=int(left), bottom=int(bottom), right=int(right)
-        )
+        obj_class_idx, x, y, w, h = line.split()
+        w = float(w) * img_width
+        h = float(h) * img_height
+        x1 = ((2 * float(x) * img_width) - w) / 2
+        y1 = ((2 * float(y) * img_height) - h) / 2
+        x2 = x1 + w
+        y2 = y1 + h
+        rectangle = sly.Rectangle(top=int(y1), left=int(x1), bottom=int(y2), right=int(x2))
         obj_class = object_classes_dict.get(obj_class_idx)
         label = sly.Label(rectangle, obj_class)
         labels.append(label)
 
-    img_width, img_height = imagesize.get(image_path)
     return sly.Annotation(img_size=(img_height, img_width), labels=labels)
 
 
@@ -110,7 +112,7 @@ object_classes_dict = {
 }
 
 obj_class_list = list(object_classes_dict.values())
-batch_size = 33
+batch_size = 50
 
 
 def convert_and_upload_supervisely_project(
@@ -127,8 +129,8 @@ def convert_and_upload_supervisely_project(
 
     for ds in dataset_names:
         dataset = api.dataset.create(project.id, ds, change_name_if_conflict=True)
-        images_pathes = glob(os.path.join(dataset_path, ds, "*/*.png"))
-        progress = sly.Progress("Create dataset {}".format("ds0"), len(images_pathes))
+        images_pathes = glob(os.path.join(dataset_path, ds, "images/*"))
+        progress = sly.Progress("Create dataset {}".format(ds), len(images_pathes))
         for img_pathes_batch in sly.batched(images_pathes, batch_size=batch_size):
             img_names_batch = [
                 sly.fs.get_file_name_with_ext(im_path) for im_path in img_pathes_batch
@@ -136,7 +138,10 @@ def convert_and_upload_supervisely_project(
 
             img_infos = api.image.upload_paths(dataset.id, img_names_batch, img_pathes_batch)
             img_ids = [im_info.id for im_info in img_infos]
-
-            anns = [create_ann(image_path) for image_path in img_pathes_batch]
-            api.annotation.upload_anns(img_ids, anns)
+            try:
+                anns = [create_ann(image_path) for image_path in img_pathes_batch]
+                api.annotation.upload_anns(img_ids, anns)
+            except Exception as e:
+                sly.logger.warning(e)
+                continue
     return project

@@ -80,8 +80,13 @@ def create_ann(image_path):
         (sly.fs.get_file_name(image_path) + ".txt"),
     )
     img_width, img_height = imagesize.get(image_path)
-    with open(ann_path) as f:
-        lines = f.readlines()
+    try:
+        with open(ann_path) as f:
+            lines = f.readlines()
+    except Exception as e:
+        sly.logger.warning(e)
+        return sly.Annotation(img_size=(img_height, img_width), labels=labels)
+
     for line in lines:
         obj_class_idx, x, y, w, h = line.split()
         w = float(w) * img_width
@@ -99,16 +104,16 @@ def create_ann(image_path):
 
 
 object_classes_dict = {
-    "0": sly.ObjClass("door", sly.Rectangle),
-    "1": sly.ObjClass("cabinetDoor", sly.Rectangle),
-    "2": sly.ObjClass("refrigeratorDoor", sly.Rectangle),
-    "3": sly.ObjClass("window", sly.Rectangle),
-    "4": sly.ObjClass("chair", sly.Rectangle),
-    "5": sly.ObjClass("table", sly.Rectangle),
-    "6": sly.ObjClass("cabinet", sly.Rectangle),
-    "7": sly.ObjClass("couch", sly.Rectangle),
-    "8": sly.ObjClass("openedDoor", sly.Rectangle),
-    "9": sly.ObjClass("pole", sly.Rectangle),
+    "0": sly.ObjClass("door", sly.Rectangle, color=[0, 255, 0]),
+    "1": sly.ObjClass("cabinetDoor", sly.Rectangle, color=[0, 0, 255]),
+    "2": sly.ObjClass("refrigeratorDoor", sly.Rectangle, color=[255, 0, 255]),
+    "3": sly.ObjClass("window", sly.Rectangle, color=[255, 80, 80]),
+    "4": sly.ObjClass("chair", sly.Rectangle, color=[255, 255, 0]),
+    "5": sly.ObjClass("table", sly.Rectangle, color=[0, 255, 204]),
+    "6": sly.ObjClass("cabinet", sly.Rectangle, color=[51, 51, 204]),
+    "7": sly.ObjClass("couch", sly.Rectangle, color=[153, 255, 51]),
+    "8": sly.ObjClass("openedDoor", sly.Rectangle, color=[51, 204, 51]),
+    "9": sly.ObjClass("pole", sly.Rectangle, color=[102, 0, 255]),
 }
 
 obj_class_list = list(object_classes_dict.values())
@@ -135,13 +140,8 @@ def convert_and_upload_supervisely_project(
             img_names_batch = [
                 sly.fs.get_file_name_with_ext(im_path) for im_path in img_pathes_batch
             ]
-
             img_infos = api.image.upload_paths(dataset.id, img_names_batch, img_pathes_batch)
             img_ids = [im_info.id for im_info in img_infos]
-            try:
-                anns = [create_ann(image_path) for image_path in img_pathes_batch]
-                api.annotation.upload_anns(img_ids, anns)
-            except Exception as e:
-                sly.logger.warning(e)
-                continue
+            anns = [create_ann(image_path) for image_path in img_pathes_batch]
+            api.annotation.upload_anns(img_ids, anns)
     return project

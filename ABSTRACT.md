@@ -1,4 +1,3 @@
-The author of **Indoor Objects Detection** dataset used to volunteer to read books for the visually impaired people and is interested in development of various accessibility features for them.
+The creator of **Indoor Objects Detection** dataset was driven by the desire to assist individuals with visual impairments in their daily activities. This dataset forms an integral part of the "Object Detection for Blind People" project, which the author undertook during their involvement in the AI Builders 2022.
 
-Traveling in unfamiliar buildings or enclosed spaces for visually impaired people is difficult. There are either obstacles or unknown paths. 
-Thus, this dataset was created.
+After some experimentation and refinement, the author defined the ultimate goal of their project: the detection of indoor objects. To achieve this, they took a sample from the [Indoor Training Set (ITS)](https://www.kaggle.com/datasets/balraj98/indoor-training-set-its-residestandard?source=post_page-----d33e3c4e11dd--------------------------------) dataset, divided it into training, testing, and validation sets, performed image annotations, and trained a YOLOv5 model.

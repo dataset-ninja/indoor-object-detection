@@ -1,6 +1,6 @@
 Dataset **Indoor Objects Detection** can be downloaded in [Supervisely format](https://developer.supervisely.com/api-references/supervisely-annotation-json-format):
 
- [Download](Set 'HIDE_DATASET=False' to generate download link)
+ [Download](https://assets.supervisely.com/supervisely-supervisely-assets-public/teams_storage/t/v/nL/cNswVSNCcRETpKqhl0F7gss16RuGyazcy9OOjZrxsyXqkgfX99wyhgiAQdfKYVa09uQ0MzrVu91aGeOSVowyWPZS1yjrnezxkjUjcrXg6mkIavqHQyH6bjzSrMYO.tar)
 
 As an alternative, it can be downloaded with *dataset-tools* package:
 ``` bash

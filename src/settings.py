@@ -55,11 +55,11 @@ CLASS2COLOR: Optional[Dict[str, List[str]]] = None
 # Use dict key to specify name for a button
 PAPER: Optional[Union[str, List[str], Dict[str, str]]] = None
 BLOGPOST: Optional[Union[str, List[str], Dict[str, str]]] = {
-    "Medium Article": "https://medium.com/@thepbordinjaiinsom/obstacle-detection-for-blind-people-d33e3c4e11dd#564b"
+    "Medium": "https://medium.com/@thepbordinjaiinsom/obstacle-detection-for-blind-people-d33e3c4e11dd#564b"
 }
 REPOSITORY: Optional[
     Union[str, List[str], Dict[str, str]]
-] = "https://github.com/thepbordin/Obstacle-Detection-for-Blind-people"
+] = {"GitHub":"https://github.com/thepbordin/Obstacle-Detection-for-Blind-people"}
 
 CITATION_URL: Optional[str] = None
 AUTHORS: Optional[List[str]] = ["Thepbordin Jaiinsom"]
